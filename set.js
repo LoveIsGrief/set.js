@@ -23,7 +23,31 @@ OFTWARE.
 
 var Set = function () {
 
-var Set = function(array){
+/**
+  * Higher-order function for comparing an object to many other elements
+  * @param {Object} object - Left side of comparator
+  * @param {Function} comparator - @see Set
+  * @returns {Function} To call comparator(object, <whatever>)
+  */
+function comparatorFor(object, comparator) {
+    return function(element) {
+        return comparator(object, element)
+    }
+}
+
+/**
+  * Predefined comparator for simple equality.
+  */
+function equality(left, right) {
+    return left == right
+}
+
+/**
+  * @param {Object} input
+  * @param {Function} comparator function(left,right) { return if left and right are equal }
+  */
+var Set = function(array,comparator){
+  this.comparator = comparator || equality
   this._array = []
 
   for (i in array || []) {
@@ -32,9 +56,9 @@ var Set = function(array){
 }
 
 Set.prototype.contains = function(prop){
-  return this._array.some(function(element) {
-            return prop == element
-          });
+  return this._array.some(
+            comparatorFor(prop, this.comparator)
+          );
 }
 
 Set.prototype.empty = function(){
@@ -142,8 +166,8 @@ Set.prototype.clear = function(){
  * @param {Function} comparator - @see Set
  * @returns {Array} Unique array from given array
  */
-Set.unique = function(array){
-  return new Set(array).get()
+Set.unique = function(array,comparator){
+  return new Set(array,comparator).get()
 }
 
 return Set

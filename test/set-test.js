@@ -23,6 +23,30 @@ vows.describe('Set').addBatch({
     , "which will be of length 7": function(topic){
         assert.equal(topic.length, 7)
     }
+
+  },"An array with non unique objects given to Set.unique": {
+      topic: function() {
+          people = [
+            { name: "Cormac"}
+            , { name: "Cormac"}
+            , { name: "Arian"}
+            , { name: "Arian"}
+            , { name: "Skinner"}
+            , { name: "Mr. Crane"}
+            , { name: "Skinner"}
+          ]
+          comparator = function(left, right) {
+              return left.name == right.name
+          }
+          return Set.unique(people, comparator)
+
+      }, "will return an array": function(topic){
+          assert.isArray(topic)
+      }
+
+      , "which will be of length 4": function(topic){
+          assert.equal(topic.length, 4)
+      }
   }
 
 , "A set" : {
@@ -94,7 +118,7 @@ vows.describe('Set').addBatch({
                     assert.isTrue(topic)
                 }
             }
-            
+
             , "Set [0,2,4]":{
                   topic: function(topic){
                     return topic.subset(new Set([0,2,4]))
